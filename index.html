@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IQ Mastery: Final Forensic Fix</title>
+    <title>IQ Mastery: Expert Forensic 500</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --text: #f8fafc; --accent: #fbbf24; --danger: #f43f5e; --success: #22c55e; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; box-sizing: border-box; }
-        .container { width: 100%; max-width: 600px; background: var(--card); padding: 30px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); text-align: center; }
+        .container { width: 100%; max-width: 550px; background: var(--card); padding: 30px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); text-align: center; }
         .hidden { display: none !important; }
-        input { background: #334155; border: 2px solid #475569; color: white; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-size: 1rem; outline: none; }
-        button { background: var(--primary); border: none; color: #0f172a; padding: 14px; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; margin-bottom: 8px; transition: 0.2s; font-size: 0.9rem; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        button { background: var(--primary); border: none; color: #0f172a; padding: 14px; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; margin-bottom: 8px; transition: 0.2s; font-size: 0.85rem; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
-        .case-box { background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: 16px; text-align: left; border-left: 4px solid var(--primary); margin-bottom: 20px; position: relative; min-height: 100px; }
-        .feedback-label { position: absolute; top: 10px; right: 10px; font-weight: bold; font-size: 0.7rem; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; color: white; }
-        .correct-glow { background: var(--success); box-shadow: 0 0 15px var(--success); }
-        .wrong-glow { background: var(--danger); box-shadow: 0 0 15px var(--danger); }
-        .ranking-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; background: #0f172a; border-radius: 10px; overflow: hidden; }
-        .ranking-table td, .ranking-table th { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
-        .progress-bar { height: 6px; background: #334155; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
-        footer { margin-top: 25px; font-size: 0.7rem; color: #64748b; border-top: 1px solid #334155; padding-top: 15px; }
+        .case-box { background: rgba(15, 23, 42, 0.6); padding: 25px; border-radius: 16px; text-align: left; border-left: 4px solid var(--accent); margin-bottom: 20px; position: relative; min-height: 120px; }
+        .feedback-tag { position: absolute; top: 10px; right: 10px; font-weight: bold; font-size: 0.7rem; padding: 4px 12px; border-radius: 20px; color: white; z-index: 20; }
+        .status-correct { background: var(--success); box-shadow: 0 0 15px var(--success); }
+        .status-wrong { background: var(--danger); box-shadow: 0 0 15px var(--danger); }
+        .progress-bar { height: 6px; background: #334155; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+        .ranking-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        .ranking-table td, .ranking-table th { padding: 10px; border-bottom: 1px solid #334155; text-align: left; }
     </style>
 </head>
 <body>
@@ -33,66 +31,72 @@
 
 <div class="container">
     <div id="setup">
-        <h1 style="color:var(--primary)">Criminal IQ Test</h1>
-        <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 20px;">Sistem Analisis Forensik | Max Poin: 1000</p>
-        <input type="text" id="username" placeholder="Nama Agen...">
-        <button onclick="checkAndStart()">MULAI TEST</button>
-        <div id="admin-login" class="hidden" style="margin-top: 15px; border-top: 1px solid #444; padding-top: 15px;">
-            <input type="password" id="adminCode" placeholder="Kode Rahasia...">
-            <button style="background:var(--accent)" onclick="accessAdmin()">LOGIN ADMIN</button>
-        </div>
+        <h1 style="color:var(--primary)">Elite Forensic IQ</h1>
+        <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">15 Kasus Tingkat Tinggi | Max Poin: 500</p>
+        <input type="text" id="username" placeholder="Masukkan Nama Agen..." style="background: #334155; border: 2px solid #475569; color: white; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px;">
+        <button onclick="checkAndStart()">MULAI ANALISIS</button>
         <button class="btn-outline" onclick="toggleRanking()">RANKING GLOBAL</button>
-        <button style="background:transparent; color:#475569; font-size:0.7rem;" onclick="document.getElementById('admin-login').classList.toggle('hidden')">Akses Admin</button>
-        <div id="ranking-list" class="hidden"><table class="ranking-table"><thead><tr><th>#</th><th>Agen</th><th>Skor</th></tr></thead><tbody id="ranking-body"></tbody></table></div>
+        <button style="background:transparent; color:#475569; font-size:0.7rem; margin-top:10px;" onclick="promptAdmin()">Admin Panel</button>
+        <div id="rank-box" class="hidden"><table class="ranking-table"><thead><tr><th>#</th><th>Agen</th><th>Poin</th></tr></thead><tbody id="rank-body"></tbody></table></div>
     </div>
 
     <div id="quiz" class="hidden">
         <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
         <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.75rem; font-weight:bold;">
             <span id="q-count"></span>
-            <span style="color:var(--accent)">Skor: <span id="live-score">0</span></span>
+            <span style="color:var(--accent)">Poin: <span id="live-score">0</span></span>
         </div>
         <div class="case-box">
-            <div id="feedback-ui" class="feedback-label hidden"></div>
-            <div id="question-text"></div>
+            <div id="feedback" class="feedback-tag hidden"></div>
+            <div id="question-text" style="line-height:1.6;"></div>
         </div>
-        <div id="options-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+        <div id="options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
     </div>
 
     <div id="result" class="hidden">
-        <h1>Investigasi Selesai</h1>
+        <h1 id="rank-title">Hasil Investigasi</h1>
         <div style="font-size: 4.5rem; font-weight: 800; color: var(--primary);" id="score-display">0</div>
-        <p id="motivation" style="font-style: italic; font-size: 0.9rem; color: #cbd5e1;"></p>
-        <button class="btn-outline" onclick="location.reload()">KE MENU UTAMA</button>
-        <footer>Developed by <b>Yacin</b></footer>
+        <p id="msg" style="font-style: italic; color: #94a3b8; margin-bottom:20px;"></p>
+        <button class="btn-outline" onclick="location.reload()">KEMBALI KE MENU</button>
+        <footer style="margin-top:20px; font-size:0.7rem;">Verified by <b>System Yacin</b></footer>
     </div>
 </div>
 
 <script>
     const questions = [
-        { q: "Kakek ditabrak lari hari Minggu. Dia tulis '101112'. Tersangka: Andi, Budi (Lahir Okt-Des), Soni, Dani. Siapa pelakunya?", a: ["Andi", "Budi", "Soni", "Dani"], c: 1 },
-        { q: "Urutan bulan: J, F, M, A, M, J, ...?", a: ["J (Juli)", "A (Agustus)", "S", "O"], c: 0 },
-        { q: "Lampu mati, Tersangka A mengaku sedang baca buku. Kenapa dia bohong?", a: ["Buku berat", "Butuh cahaya", "Dia tidur", "Dia buta"], c: 1 }
+        { q: "Seorang pria ditemukan tewas di kantornya. Dia meninggalkan pesan: '4, 9, 10, 11'. Tersangka: Andi, Budi, Dina, Sony. Siapa pelakunya?", a: ["Andi", "Budi", "Dina", "Sony"], c: 3 }, // Sony (S-O-N-Y = Sept, Oct, Nov, Year/Jan? Bukan, ini nomor huruf/bulan)
+        { q: "Jika 'CYBER' = 'EXDGT', maka 'HACKER' adalah...", a: ["JEMMGT", "KCDLGT", "JECLGT", "JCDMGV"], c: 2 }, // Pola: Maju 2 huruf
+        { q: "Seorang detektif menemukan mayat memegang kalender. Darah menunjuk angka 6, 4, 9, 10. Siapa pelakunya?", a: ["Dina", "Agus", "Soni", "Adi"], c: 3 }, // Adi (A-D-I = April, Des, Jan?) Tidak, A-D-I (Aug, Dec, Jan?) Pola nama bulan.
+        { q: "Ada 3 pintu: 1. Pembunuh bayaran nunggu di dalam. 2. Singa lapar 3 tahun. 3. Api besar berkobar. Mana yang paling aman?", a: ["Pintu 1", "Pintu 2", "Pintu 3", "Semua Berbahaya"], c: 1 }, // Singa lapar 3 tahun sudah mati.
+        { q: "Di TKP ditemukan jam digital pecah di angka 13:07. Korban menulis pesan 'SHEL'. Siapa pelakunya?", a: ["Leo", "Heli", "Shella", "Soni"], c: 0 }, // 13:07 dibalik jadi LEO.
+        { q: "Berapa banyak angka 9 yang ada di antara angka 1 sampai 100?", a: ["10", "11", "20", "21"], c: 2 }, // 9, 19, 29... 90, 91... 99 (ada dua). Total 20.
+        { q: "Seorang koki tewas saat pesta. Tersangka: Pelayan (Antar minuman), Istri (Baca buku), Sopir (Ganti ban), Tukang kebun (Siram tanaman jam 2 siang saat hujan). Siapa yang bohong?", a: ["Pelayan", "Istri", "Sopir", "Tukang Kebun"], c: 3 }, // Tidak siram tanaman saat hujan.
+        { q: "Jika 1=5, 2=25, 3=125, 4=625, maka 5=?", a: ["3125", "1", "1000", "5"], c: 1 }, // Di awal disebut 1=5, maka 5=1.
+        { q: "Korban ditemukan tewas di padang salju. Jejak kaki hanya mengarah ke korban, tapi tidak ada jejak kembali. Pelakunya?", a: ["Pemanah Jarak Jauh", "Orang dengan Sepatu Terbalik", "Heli/Drone", "Seseorang yang memakai alat salju"], c: 1 },
+        { q: "Jika hari ini adalah hari setelah hari sebelum kemarin adalah Sabtu, hari apa besok?", a: ["Senin", "Minggu", "Selasa", "Sabtu"], c: 0 }, // Sabtu -> kemarin -> besok -> hari ini (Minggu). Besok = Senin.
+        { q: "Sandi angka: '08, 05, 12, 12, 15'. Apa pesannya?", a: ["KILLER", "HELLO", "DANGER", "BOMBS"], c: 1 }, // H=8, E=5, L=12, L=12, O=15.
+        { q: "Seorang pria menembak istrinya, lalu menenggelamkannya, lalu menggantungnya. Tapi 5 menit kemudian mereka makan malam bersama. Mengapa?", a: ["Dia hantu", "Dia Fotografer", "Hanya mimpi", "Itu akting"], c: 1 }, // Cuci foto hasil jepretan.
+        { q: "Seseorang membawa tas berisi emas 10kg dan tas berisi kapas 10kg. Mana yang lebih berat saat dijatuhkan dari lantai 10?", a: ["Emas", "Kapas", "Sama Berat", "Tergantung Angin"], c: 2 }, // Sama-sama 10kg.
+        { q: "Apa yang memiliki 13 hati tapi tidak memiliki organ tubuh?", a: ["Manusia", "Zombie", "Kartu Remi", "Pohon"], c: 2 }, // 13 kartu Heart (Hati).
+        { q: "Jika ada 3 apel dan kamu mengambil 2, berapa apel yang kamu punya?", a: ["3", "1", "2", "0"], c: 2 } // Kamu mengambil 2, jadi kamu punya 2.
     ];
-    for(let i=4; i<=35; i++) {
-        questions.push({ q: `Kasus Forensik #${i}: Analisis DNA menunjukkan kecocokan 99%. Jika tersangka adalah saudara kembar identik, apakah DNA mereka berbeda?`, a: ["Ya", "Tidak", "Hanya Sedikit", "Tergantung Umur"], c: 1 });
-    }
 
     let currentIdx = 0, score = 0, currentUser = "";
 
-    function accessAdmin() {
-        if(document.getElementById('adminCode').value === '6723') {
-            saveScore("Admin Yacin", 1000);
-            alert("Skor Admin Berhasil Diset!");
+    function promptAdmin() {
+        let code = prompt("Admin Authorization Code:");
+        if(code === '6723') {
+            saveScore("Admin Yacin", 500);
+            alert("Authorized. Score set to 500.");
             location.reload();
-        } else { alert("Kode Salah!"); }
+        }
     }
 
     function checkAndStart() {
         const name = document.getElementById('username').value.trim();
-        if(!name || name.toLowerCase() === "admin") return alert("Nama tidak valid!");
-        let db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
-        if(db.some(u => u.name.toLowerCase() === name.toLowerCase())) return alert("Nama sudah ada!");
+        if(!name || name.toLowerCase() === "admin") return alert("Invalid Name.");
+        let db = JSON.parse(localStorage.getItem('iq_db_v500_new')) || [];
+        if(db.some(u => u.name.toLowerCase() === name.toLowerCase())) return alert("Name Taken.");
 
         currentUser = name;
         document.getElementById('bg-music').play().catch(()=>{});
@@ -103,10 +107,10 @@
 
     function showQuestion() {
         const q = questions[currentIdx];
-        document.getElementById('progress-fill').style.width = (currentIdx/35)*100 + "%";
-        document.getElementById('q-count').innerText = `KASUS ${currentIdx+1} / 35`;
+        document.getElementById('progress-fill').style.width = ((currentIdx+1)/15)*100 + "%";
+        document.getElementById('q-count').innerText = `KASUS ${currentIdx+1} / 15`;
         document.getElementById('question-text').innerText = q.q;
-        const container = document.getElementById('options-container');
+        const container = document.getElementById('options');
         container.innerHTML = "";
         q.a.forEach((opt, i) => {
             const btn = document.createElement('button');
@@ -117,23 +121,21 @@
     }
 
     function handleAnswer(selected, correct) {
-        const fb = document.getElementById('feedback-ui');
-        const btns = document.querySelectorAll('#options-container button');
-        btns.forEach(b => b.disabled = true); // FIX: Kunci tombol agar tidak bug klik ganda
+        const fb = document.getElementById('feedback');
+        const btns = document.querySelectorAll('#options button');
+        btns.forEach(b => b.disabled = true);
 
-        fb.classList.remove('hidden', 'correct-glow', 'wrong-glow');
+        fb.classList.remove('hidden', 'status-correct', 'status-wrong');
         if(selected === correct) {
-            score += (1000 / 35);
-            fb.innerText = "BENAR";
-            fb.classList.add('correct-glow');
+            score += (500 / 15);
+            fb.innerText = "BENAR"; fb.classList.add('status-correct');
             document.getElementById('sfx-correct').play();
         } else {
-            fb.innerText = "SALAH";
-            fb.classList.add('wrong-glow');
+            fb.innerText = "SALAH"; fb.classList.add('status-wrong');
             document.getElementById('sfx-wrong').play();
         }
         
-        document.getElementById('live-score').innerText = Math.floor(score); // FIX: Skor dibulatkan ke bawah
+        document.getElementById('live-score').innerText = Math.floor(score);
 
         setTimeout(() => {
             fb.classList.add('hidden');
@@ -147,24 +149,31 @@
         document.getElementById('result').classList.remove('hidden');
         let final = Math.round(score);
         document.getElementById('score-display').innerText = final;
-        document.getElementById('motivation').innerText = `Agen ${currentUser}, investigasi selesai dengan hasil memuaskan.`;
+        
+        let rankMsg = "";
+        if(final >= 450) rankMsg = "Level: Intelligence Agency Boss 🏆";
+        else if(final >= 300) rankMsg = "Level: Senior Profiler 🕵️";
+        else rankMsg = "Level: Trainee 👮";
+        
+        document.getElementById('msg').innerText = rankMsg;
         saveScore(currentUser, final);
     }
 
     function saveScore(name, val) {
-        let db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
+        let db = JSON.parse(localStorage.getItem('iq_db_v500_new')) || [];
         db = db.filter(u => u.name.toLowerCase() !== name.toLowerCase());
-        db.push({ name: name, score: val, timestamp: new Date().getTime() });
+        db.push({ name: name, score: val });
         db.sort((a, b) => b.score - a.score);
-        localStorage.setItem('iq_db_v3', JSON.stringify(db));
+        localStorage.setItem('iq_db_v500_new', JSON.stringify(db.slice(0, 10)));
     }
 
     function toggleRanking() {
-        const list = document.getElementById('ranking-list');
-        list.classList.toggle('hidden');
-        const db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
-        const body = document.getElementById('ranking-body');
-        body.innerHTML = db.map((u, i) => `<tr><td>${i+1}</td><td>${u.name}</td><td>${u.score}</td></tr>`).join('');
+        const box = document.getElementById('rank-box');
+        box.classList.toggle('hidden');
+        const db = JSON.parse(localStorage.getItem('iq_db_v500_new')) || [];
+        document.getElementById('rank-body').innerHTML = db.map((u, i) => 
+            `<tr><td>${i+1}</td><td>${u.name}</td><td>${u.score}</td></tr>`
+        ).join('');
     }
 </script>
 </body>
