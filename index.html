@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IQ Mastery: Ultimate Admin Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --text: #f8fafc; --accent: #fbbf24; --danger: #f43f5e; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; box-sizing: border-box; }
+        .container { width: 100%; max-width: 600px; background: var(--card); padding: 30px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); text-align: center; }
+        .hidden { display: none; }
+        input { background: #334155; border: 2px solid #475569; color: white; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--primary); }
+        button { background: var(--primary); border: none; color: #0f172a; padding: 14px; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; margin-bottom: 8px; transition: 0.2s; font-size: 0.9rem; }
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-admin { background: var(--accent); color: #0f172a; }
+        .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+        .btn-danger { background: var(--danger); color: white; padding: 5px 10px; width: auto; font-size: 0.7rem; border-radius: 5px; border: none; cursor: pointer; }
+        .case-box { background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: 16px; text-align: left; border-left: 4px solid var(--primary); margin-bottom: 20px; font-size: 1rem; line-height: 1.5; }
+        .ranking-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; background: #0f172a; border-radius: 10px; overflow: hidden; }
+        .ranking-table td, .ranking-table th { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
+        .progress-bar { height: 6px; background: #334155; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+        footer { margin-top: 25px; font-size: 0.7rem; color: #64748b; border-top: 1px solid #334155; padding-top: 15px; }
+    </style>
+</head>
+<body>
+
+<audio id="bg-music" loop><source src="SpotiDown.App - double take - Dhruv.mp3" type="audio/mpeg"></audio>
+<audio id="sfx-correct"><source src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" type="audio/mpeg"></audio>
+<audio id="sfx-wrong"><source src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" type="audio/mpeg"></audio>
+
+<div class="container">
+    <div id="setup">
+        <h1 style="color:var(--primary)">Criminal IQ Test</h1>
+        <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 20px;">Unique User System | Admin Key: 6723</p>
+        
+        <div id="user-inputs">
+            <input type="text" id="username" placeholder="Nama Agen Baru...">
+            <button onclick="checkAndStart()">MULAI TEST</button>
+        </div>
+
+        <div id="admin-login" class="hidden" style="margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px;">
+            <input type="password" id="adminCode" placeholder="Masukkan Kode Admin...">
+            <button class="btn-admin" onclick="accessAdmin()">LOGIN ADMIN</button>
+        </div>
+
+        <button class="btn-outline" onclick="toggleRanking('menu-ranking-list', 'menu-ranking-body')">RANKING GLOBAL</button>
+        <button style="background:transparent; color:#475569; font-size:0.7rem;" onclick="showAdminSection()">Akses Panel Admin</button>
+        
+        <div id="menu-ranking-list" class="hidden">
+            <table class="ranking-table">
+                <thead><tr><th>#</th><th>Agen</th><th>Title</th><th>Skor</th></tr></thead>
+                <tbody id="menu-ranking-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="hidden">
+        <h2 style="color:var(--accent)">Admin Control Center</h2>
+        <div class="case-box">
+            <p style="margin:0 0 10px 0;">Status: <b>Admin Authorized</b></p>
+            <button class="btn-admin" onclick="setAdminMax()">SET SKOR SAYA (1000)</button>
+        </div>
+        <div id="admin-user-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;"></div>
+        <button class="btn-outline" onclick="location.reload()">KELUAR ADMIN</button>
+    </div>
+
+    <div id="quiz" class="hidden">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <div id="q-count" style="font-size:0.75rem; color:var(--primary); font-weight:bold; margin-bottom:5px; text-align:left;"></div>
+        <div class="case-box" id="question-text"></div>
+        <div id="options-container"></div>
+    </div>
+
+    <div id="result" class="hidden">
+        <h1>Hasil Investigasi</h1>
+        <div style="font-size: 4.5rem; font-weight: 800; color: var(--primary);" id="score-display">0</div>
+        <div class="case-box" style="border-left-color: var(--accent);">
+            <p id="motivation" style="font-style: italic; font-size: 0.9rem; color: #cbd5e1; margin:0;"></p>
+        </div>
+        <button class="btn-outline" onclick="location.reload()">KEMBALI KE MENU</button>
+        <footer>Developed with logic by <b>Yacin</b></footer>
+    </div>
+</div>
+
+<script>
+    // SOAL FIX (Tidak Stuck)
+    const questions = [
+        { q: "Seorang kakek ditabrak lari hari Minggu. Dia tulis '101112' di aspal. Tersangka: Andi, Budi, Soni. Siapa pelakunya?", a: ["Andi", "Budi (Okt-Des)", "Soni"], c: 1 },
+        { q: "Lengkapi pola urutan bulan: J, F, M, A, M, J, ...?", a: ["J (Juli)", "A (Agustus)", "S (September)"], c: 0 },
+        { q: "Listrik mati total malam hari. Tersangka A mengaku sedang membaca buku di kamar. Mengapa Detektif langsung tahu dia bohong?", a: ["Buku itu berat", "Membaca butuh cahaya", "Dia tidak bisa baca"], c: 1 },
+        { q: "3 kucing menangkap 3 tikus dalam 3 menit. Berapa lama waktu yang dibutuhkan 100 kucing untuk menangkap 100 tikus?", a: ["100 menit", "33 menit", "3 menit"], c: 2 },
+        { q: "Seorang pria masuk ke rumah gelap dengan satu korek api. Ada lilin, lampu minyak, dan kayu bakar. Apa yang dinyalakan pertama?", a: ["Lilin", "Korek Api", "Lampu Minyak"], c: 1 }
+    ];
+    for(let i=6; i<=35; i++) {
+        questions.push({ q: `Kasus Logika #${i}: Bukti digital menunjukkan timestamp palsu. Jika hacker menyerang jam 12 siang, tapi log menunjukkan jam 12 malam, berapa jam selisihnya?`, a: ["12 Jam", "6 Jam", "0 Jam"], c: 0 });
+    }
+
+    let currentIdx = 0, score = 0, currentUser = "";
+    const titles = ["Grandmaster Detective 🏆", "Elite Investigator 🔍", "Senior Profiler 🕵️", "Special Agent 🕶️", "Detective Rookie 👮"];
+
+    function showAdminSection() { document.getElementById('admin-login').classList.toggle('hidden'); }
+
+    function accessAdmin() {
+        if(document.getElementById('adminCode').value === '6723') {
+            document.getElementById('setup').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            renderAdminUserList();
+        } else { alert("Kode Admin Salah!"); }
+    }
+
+    function checkAndStart() {
+        const inputName = document.getElementById('username').value.trim();
+        if(!inputName) return alert("Masukkan Nama!");
+        
+        // Cek apakah nama adalah 'admin' (Dilarang)
+        if(inputName.toLowerCase() === "admin") return alert("Nama 'Admin' tidak boleh digunakan untuk tes!");
+
+        let db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
+        
+        // FIX: Cek apakah nama sudah ada (Case Insensitive)
+        const isDuplicate = db.some(user => user.name.toLowerCase() === inputName.toLowerCase());
+        
+        if(isDuplicate) {
+            const existingUser = db.find(u => u.name.toLowerCase() === inputName.toLowerCase());
+            const now = new Date().getTime();
+            const lastTime = existingUser.timestamp || 0;
+            const oneDay = 24 * 60 * 60 * 1000;
+
+            if(now - lastTime < oneDay) {
+                const hoursLeft = Math.ceil((oneDay - (now - lastTime)) / (3600000));
+                return alert(`Nama "${inputName}" sudah ada di database. Gunakan nama lain atau tunggu ${hoursLeft} jam lagi.`);
+            }
+        }
+
+        // Jika lolos seleksi
+        currentUser = inputName;
+        document.getElementById('bg-music').play().catch(()=>{});
+        document.getElementById('setup').classList.add('hidden');
+        document.getElementById('quiz').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentIdx];
+        document.getElementById('progress-fill').style.width = (currentIdx/35)*100 + "%";
+        document.getElementById('q-count').innerText = `KASUS ${currentIdx+1} / 35`;
+        document.getElementById('question-text').innerText = q.q;
+        const container = document.getElementById('options-container');
+        container.innerHTML = "";
+        q.a.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = "btn-outline"; btn.innerText = opt;
+            btn.onclick = () => {
+                if(i === q.c) { 
+                    score += (1000 / 35); 
+                    document.getElementById('sfx-correct').currentTime = 0;
+                    document.getElementById('sfx-correct').play();
+                } else {
+                    document.getElementById('sfx-wrong').currentTime = 0;
+                    document.getElementById('sfx-wrong').play();
+                }
+                currentIdx++;
+                if(currentIdx < questions.length) showQuestion(); else finish();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function finish() {
+        document.getElementById('quiz').classList.add('hidden');
+        document.getElementById('result').classList.remove('hidden');
+        let finalScore = Math.round(score);
+        document.getElementById('score-display').innerText = finalScore;
+        document.getElementById('motivation').innerText = `Analisis selesai. Agen ${currentUser}, skor kamu telah dikunci.`;
+        saveScore(currentUser, finalScore);
+    }
+
+    function saveScore(name, val) {
+        let db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
+        // Hapus entri lama dengan nama yang sama agar tidak menumpuk
+        db = db.filter(u => u.name.toLowerCase() !== name.toLowerCase());
+        db.push({ name: name, score: val, timestamp: new Date().getTime() });
+        db.sort((a, b) => b.score - a.score);
+        localStorage.setItem('iq_db_v3', JSON.stringify(db));
+    }
+
+    function toggleRanking(listId, bodyId) {
+        const list = document.getElementById(listId);
+        list.classList.toggle('hidden');
+        const db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
+        const body = document.getElementById(bodyId);
+        body.innerHTML = "";
+        db.forEach((u, i) => {
+            let t = i < 5 ? titles[i] : "Agent";
+            body.innerHTML += `<tr><td>${i+1}</td><td>${u.name}</td><td>${t}</td><td>${u.score}</td></tr>`;
+        });
+    }
+
+    // ADMIN CONTROLS
+    function setAdminMax() {
+        saveScore("Admin Yacin", 1000);
+        alert("Skor kamu (Admin Yacin) sudah di-set ke 1000!");
+        renderAdminUserList();
+    }
+
+    function renderAdminUserList() {
+        const db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
+        const container = document.getElementById('admin-user-list');
+        container.innerHTML = "<p style='text-align:left; font-size:0.8rem; color:var(--primary);'>DATABASE USERS:</p>";
+        db.forEach((u) => {
+            container.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:#334155; padding:10px; margin-bottom:5px; border-radius:8px;">
+                <span style="font-size:0.8rem;">${u.name} (${u.score})</span>
+                <button class="btn-danger" onclick="deleteUser('${u.name}')">HAPUS</button>
+            </div>`;
+        });
+    }
+
+    function deleteUser(name) {
+        if(confirm(`Yakin ingin menghapus Agen ${name}?`)) {
+            let db = JSON.parse(localStorage.getItem('iq_db_v3')) || [];
+            db = db.filter(u => u.name !== name);
+            localStorage.setItem('iq_db_v3', JSON.stringify(db));
+            renderAdminUserList();
+        }
+    }
+</script>
+</body>
+</html>
