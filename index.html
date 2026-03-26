@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite IQ v3.8: Detective Academy 15 Cases</title>
+    <title>Elite IQ v4.0: Forensic Mastermind</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --bg-body: #131314; --bg-card: #1e1f20; --bg-input: #131314;
+            --bg-body: #0f0f10; --bg-card: #1e1f20; --bg-input: #131314;
             --text-main: #e3e3e3; --text-sub: #9e9e9e; --primary: #a8cdff; 
-            --border: #3c4043; --success: #34d399; --danger: #f87171; --shadow: rgba(0,0,0,0.5);
+            --border: #3c4043; --success: #34d399; --danger: #f87171; --shadow: rgba(0,0,0,0.6);
         }
         [data-theme="light"] {
             --bg-body: #f0f2f5; --bg-card: #ffffff; --bg-input: #f0f2f5;
@@ -18,96 +18,101 @@
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; }
         .header { background: var(--bg-card); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .theme-switch { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: flex; gap: 5px; }
+        .theme-switch { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
         .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: var(--bg-card); z-index: 200; transition: 0.3s; padding: 40px 20px; box-shadow: 10px 0 30px var(--shadow); border-right: 1px solid var(--border); }
         .sidebar.active { left: 0; }
         .sidebar-item { padding: 15px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-bottom: 5px; transition: 0.2s; text-align: left; }
         .sidebar-item:hover { background: var(--bg-input); color: var(--primary); }
         .container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .card { width: 100%; max-width: 500px; background: var(--bg-card); padding: 30px; border-radius: 24px; box-shadow: 0 10px 25px var(--shadow); text-align: center; border: 1px solid var(--border); }
+        .card { width: 100%; max-width: 500px; background: var(--bg-card); padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px var(--shadow); text-align: center; border: 1px solid var(--border); }
         .hidden { display: none !important; }
         input { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 15px; border-radius: 12px; width: 100%; box-sizing: border-box; margin-bottom: 15px; outline: none; }
         button { background: var(--primary); border: none; color: #0b0f1a; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.95rem; margin-bottom: 10px; }
         .btn-sec { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
-        #options button { text-align: left; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); transition: 0.3s; }
-        #options button.correct-glow { background: var(--success) !important; color: white !important; border-color: var(--success) !important; box-shadow: 0 0 15px var(--success); }
-        #options button.wrong-glow { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; box-shadow: 0 0 15px var(--danger); }
+        #options button { text-align: left; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); transition: 0.3s; font-weight: 500; }
+        #options button.correct-glow { background: var(--success) !important; color: white !important; border-color: var(--success) !important; box-shadow: 0 0 20px var(--success); }
+        #options button.wrong-glow { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; box-shadow: 0 0 20px var(--danger); }
         .progress-bar { height: 6px; background: var(--border); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85rem; }
         td, th { padding: 12px 5px; border-bottom: 1px solid var(--border); }
-        .titel-tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 8px; background: var(--bg-input); color: var(--primary); border: 1px solid var(--primary); font-weight: 800; margin-left: 5px; }
+        .titel-tag { font-size: 0.6rem; padding: 3px 8px; border-radius: 8px; background: var(--bg-input); color: var(--primary); border: 1px solid var(--primary); font-weight: 800; margin-left: 5px; box-shadow: 0 0 5px var(--primary); }
+        #score-display { text-shadow: 0 0 20px var(--primary); }
     </style>
 </head>
 <body data-theme="dark">
 
+<audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+<audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+
 <div class="header">
     <div style="display:flex; align-items:center; gap:15px;">
         <div style="cursor:pointer; font-size:1.4rem;" onclick="toggleSidebar()">☰</div>
-        <div style="font-weight:800; color:var(--primary); font-size:1.1rem;">ELITE IQ GLOBAL</div>
+        <div style="font-weight:800; color:var(--primary); font-size:1.1rem; letter-spacing: 1px;">ELITE IQ GLOBAL</div>
     </div>
     <button class="theme-switch" onclick="toggleTheme()"><span id="theme-icon">☀️</span></button>
 </div>
 
 <div class="sidebar" id="sidebar">
     <h2 style="color:var(--primary)">Forensic Menu</h2>
-    <div class="sidebar-item" onclick="showPage('setup')">🏠 Home</div>
+    <div class="sidebar-item" onclick="showPage('setup')">🏠 Beranda</div>
     <div class="sidebar-item" onclick="toggleRanking()">🏆 Ranking Global</div>
-    <div class="sidebar-item" onclick="showPage('about')">💡 Tingkatan Detektif</div>
-    <div class="sidebar-item" onclick="promptAdmin()">🔒 Reset Agen (Admin)</div>
+    <div class="sidebar-item" onclick="showPage('about')">💡 Klasifikasi Agen</div>
+    <div class="sidebar-item" onclick="promptAdmin()">🔒 Sistem Reset</div>
     <div class="sidebar-item" style="color:var(--danger); margin-top:40px;" onclick="toggleSidebar()">Tutup</div>
 </div>
 
 <div class="container">
     <div id="setup" class="card">
-        <h2>Otoritas Agen</h2>
+        <h2 style="margin-top:0">Otoritas Agen</h2>
         <div id="welcome-user" class="hidden">
             <h3 id="logged-name" style="color:var(--primary)"></h3>
-            <button onclick="startQuiz()">MULAI ANALISIS</button>
+            <button onclick="startQuiz()">MULAI INVESTIGASI</button>
         </div>
         <div id="new-user">
+            <p style="color:var(--text-sub); font-size:0.9rem;">Masukkan kode nama untuk memulai sinkronisasi data.</p>
             <input type="text" id="username" placeholder="Nama Kode Agen...">
-            <button onclick="checkAndRegister()">DAFTAR AGEN</button>
+            <button onclick="checkAndRegister()">DAFTAR & MASUK</button>
         </div>
     </div>
 
     <div id="about" class="card hidden">
-        <h2>Tingkatan Detektif</h2>
-        <p style="text-align:left; color:var(--text-sub); font-size:0.9rem; line-height:1.6;">
-            <b>Skor Maksimal: 100</b><br><br>
-            - 100: 🕵️ MASTER DETECTIVE<br>
-            - 60 - 99: 🔍 SENIOR INVESTIGATOR<br>
-            - 30 - 59: 🛡️ JUNIOR AGENT<br>
-            - < 30: 📝 ACADEMY TRAINEE
-        </p>
-        <button class="btn-sec" onclick="showPage('setup')">Kembali</button>
+        <h2>Klasifikasi Detektif</h2>
+        <div style="text-align:left; color:var(--text-sub); font-size:0.85rem; line-height:1.7;">
+            <b style="color:var(--primary)">450 - 500:</b> THE LEGENDARY FORENSIC MASTERMIND<br>
+            <b style="color:var(--primary)">300 - 449:</b> ELITE SENIOR INVESTIGATOR<br>
+            <b style="color:var(--primary)">150 - 299:</b> FIELD JUNIOR AGENT<br>
+            <b style="color:var(--primary)">000 - 149:</b> ACADEMY TRAINEE RECRUIT
+        </div>
+        <button class="btn-sec" style="margin-top:20px" onclick="showPage('setup')">Kembali</button>
     </div>
 
     <div id="ranking" class="card hidden">
-        <h2>Ranking Global</h2>
+        <h2>Ranking Global (Cloud)</h2>
         <table>
-            <thead><tr><th align="left">Pos</th><th align="left">Agen & Rank</th><th align="right">Poin</th></tr></thead>
+            <thead><tr><th align="left">Pos</th><th align="left">Agen & Pangkat</th><th align="right">Poin</th></tr></thead>
             <tbody id="rank-body"></tbody>
         </table>
-        <button class="btn-sec" onclick="showPage('setup')">Kembali</button>
+        <button class="btn-sec" style="margin-top:20px" onclick="showPage('setup')">Kembali</button>
     </div>
 
     <div id="quiz" class="card hidden">
         <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
         <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:10px;">
             <span id="q-count"></span>
-            <span style="font-weight:bold; color:var(--primary);">SKOR: <span id="live-score">0</span></span>
+            <span style="font-weight:bold; color:var(--primary);">POINTS: <span id="live-score">0</span></span>
         </div>
-        <div style="background:var(--bg-input); padding:20px; border-radius:15px; text-align:left; border-left:4px solid var(--primary); margin-bottom:20px;" id="question-text"></div>
+        <div style="background:var(--bg-input); padding:20px; border-radius:15px; text-align:left; border-left:4px solid var(--primary); margin-bottom:20px; font-weight:600;" id="question-text"></div>
         <div id="options" style="display:grid; gap:10px;"></div>
     </div>
 
     <div id="result" class="card hidden">
-        <h2>Investigasi Selesai</h2>
-        <div style="font-size:4.5rem; font-weight:800; color:var(--primary);" id="score-display">0</div>
-        <p id="msg" style="color:var(--text-sub); margin-bottom:20px; font-weight: 600;"></p>
-        <div id="cloud-status" style="font-size:0.75rem; color:var(--success); margin-bottom:15px; font-weight: 500;"></div>
-        <button onclick="location.reload()">KEMBALI KE MENU</button>
+        <h2>Hasil Analisis Final</h2>
+        <div style="font-size:4.5rem; font-weight:900; color:var(--primary);" id="score-display">0</div>
+        <p id="msg" style="color:var(--primary); margin-bottom:10px; font-weight: 800; font-size: 1.1rem;"></p>
+        <p id="sub-msg" style="color:var(--text-sub); font-size: 0.85rem; margin-bottom:20px;"></p>
+        <div id="cloud-status" style="font-size:0.75rem; color:var(--success); margin-bottom:15px;"></div>
+        <button onclick="location.reload()">RE-INITIALIZE MENU</button>
     </div>
 </div>
 
@@ -122,7 +127,7 @@
         { q: "Sandi Digital TKP: '3 21 16 1'. Jika dikonversi ke alfabet, menunjuk nama?", a: ["B-A-N-G", "C-U-P-A", "D-U-M-B", "C-A-P-A"], c: 1 },
         { q: "Analisis TKP: Jendela pecah dari luar, serpihan kaca ada di trotoar luar gedung. Kesimpulan?", a: ["Pelaku jujur", "Pecah dari dalam", "Dua pelaku", "Suhu udara"], c: 1 },
         { q: "Pola Brankas: 2, 6, 12, 20, 30, ...?", a: ["40", "42", "44", "50"], c: 1 },
-        { q: "Pesan Biner: '10101' di tangan korban. Siapa pelakunya (Desimal)?", a: ["21", "20", "19", "18"], c: 0 },
+        { q: "Pesan Biner: '10101' di tangan korban. Siapa pelakunya?", a: ["21", "20", "19", "18"], c: 0 },
         { q: "Tiga Pintu: Pintu A (Gas Sarin), Pintu B (Sniper), Pintu C (Singa lapar 1 tahun). Mana yang aman?", a: ["Pintu A", "Pintu B", "Pintu C", "Semua Mati"], c: 2 },
         { q: "Sandi Caesar: 'DETEKTIF' -> 'EFUFLUJG'. Sandi 'IQ'?", a: ["JR", "KP", "JS", "KR"], c: 0 },
         { q: "Jejak Salju: Datang dari utara, tidak ada jejak kembali. Mengapa?", a: ["Terbang", "Jalan Mundur", "Egrang", "Salju Baru"], c: 1 },
@@ -137,10 +142,10 @@
     let currentIdx = 0, score = 0, currentUser = "";
 
     window.onload = () => {
-        const saved = localStorage.getItem('agent_v33');
+        const saved = localStorage.getItem('agent_v4');
         if(saved) {
             currentUser = saved;
-            document.getElementById('logged-name').innerText = "Agen: " + currentUser;
+            document.getElementById('logged-name').innerText = "Agen Terverifikasi: " + currentUser;
             document.getElementById('welcome-user').classList.remove('hidden');
             document.getElementById('new-user').classList.add('hidden');
         }
@@ -165,9 +170,9 @@
 
     function checkAndRegister() {
         const name = document.getElementById('username').value.trim();
-        if(name.length < 3) return alert("Nama minimal 3 huruf!");
+        if(name.length < 3) return alert("Minimal 3 karakter!");
         currentUser = name;
-        localStorage.setItem('agent_v33', name);
+        localStorage.setItem('agent_v4', name);
         startQuiz();
     }
 
@@ -192,21 +197,30 @@
         const btns = document.querySelectorAll('#options button');
         btns.forEach(b => b.onclick = null);
         if(sel === cor) {
-            score += (100/questions.length);
+            score += (500/questions.length);
             btn.classList.add('correct-glow');
+            document.getElementById('snd-correct').play();
         } else {
             btn.classList.add('wrong-glow');
             btns[cor].classList.add('correct-glow');
+            document.getElementById('snd-wrong').play();
         }
         document.getElementById('live-score').innerText = Math.round(score);
-        setTimeout(() => { if(++currentIdx < questions.length) showQuestion(); else finish(); }, 1000);
+        setTimeout(() => { if(++currentIdx < questions.length) showQuestion(); else finish(); }, 1200);
     }
 
     function getRank(s) {
-        if(s >= 100) return "MASTER";
-        if(s >= 60) return "SENIOR";
-        if(s >= 30) return "JUNIOR";
+        if(s >= 450) return "MASTERMIND";
+        if(s >= 300) return "SENIOR";
+        if(s >= 150) return "JUNIOR";
         return "TRAINEE";
+    }
+
+    function getLongRank(s) {
+        if(s >= 450) return "THE LEGENDARY FORENSIC MASTERMIND";
+        if(s >= 300) return "ELITE SENIOR INVESTIGATOR";
+        if(s >= 150) return "FIELD JUNIOR AGENT";
+        return "ACADEMY TRAINEE RECRUIT";
     }
 
     async function fetchGlobalRank() {
@@ -219,11 +233,12 @@
 
     async function finish() {
         showPage('result');
-        const final = Math.min(100, Math.round(score));
+        const final = Math.min(500, Math.round(score));
         const rankName = getRank(final);
         document.getElementById('score-display').innerText = final;
-        document.getElementById('msg').innerText = "Tingkatan: " + rankName;
-        document.getElementById('cloud-status').innerText = "📡 Menyambung ke Satelit...";
+        document.getElementById('msg').innerText = getLongRank(final);
+        document.getElementById('sub-msg').innerText = "Data detektif sedang dikirim ke server pusat...";
+        document.getElementById('cloud-status').innerText = "📡 Mengunggah laporan...";
         
         try {
             let db = await fetchGlobalRank();
@@ -235,20 +250,20 @@
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
                 body: JSON.stringify(db.slice(0, 10))
             });
-            document.getElementById('cloud-status').innerText = "✅ Skor Terkirim ke Cloud!";
-        } catch (e) { document.getElementById('cloud-status').innerText = "❌ Gagal Terhubung."; }
+            document.getElementById('cloud-status').innerText = "✅ Berhasil Diarsipkan!";
+        } catch (e) { document.getElementById('cloud-status').innerText = "❌ Koneksi Gagal."; }
     }
 
     async function toggleRanking() {
         showPage('ranking');
-        document.getElementById('rank-body').innerHTML = `<tr><td colspan="3" align="center">📡 Loading...</td></tr>`;
+        document.getElementById('rank-body').innerHTML = `<tr><td colspan="3" align="center">📡 Memanggil data...</td></tr>`;
         const db = await fetchGlobalRank();
         document.getElementById('rank-body').innerHTML = db.map((u, i) => 
             `<tr><td>${i+1}</td><td>${u.name} <span class="titel-tag">${u.rank}</span></td><td align="right">${u.score}</td></tr>`
         ).join('');
     }
 
-    function promptAdmin() { if(prompt("Kode Admin:") === "6723") { localStorage.clear(); location.reload(); } }
+    function promptAdmin() { if(prompt("Otoritas Admin:") === "6723") { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
