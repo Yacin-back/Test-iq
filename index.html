@@ -3,121 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite IQ v5.0: Criminal Intelligence</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Elite IQ v5.1: Instant Mastermind</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --bg: #0a0a0b; --card: #141416; --primary: #00ff88; --danger: #ff4b2b;
-            --text: #e0e0e0; --accent: #1e293b; --border: #27272a;
+            --text: #e0e0e0; --border: #27272a; --accent: #1e293b;
         }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* Booting Animation */
-        #boot-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
-        .typing { overflow: hidden; white-space: nowrap; border-right: 2px solid var(--primary); animation: typing 2s steps(30, end), blink .5s step-end infinite; width: fit-content; }
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink { from, to { border-color: transparent } 50% { border-color: var(--primary) } }
+        .header { padding: 15px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--card); }
+        .container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
 
-        .card { width: 90%; max-width: 500px; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
-        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--primary), #00ddeb); }
+        .card { width: 100%; max-width: 450px; background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 15px 30px rgba(0,0,0,0.5); position: relative; }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 15px 15px 0 0; }
 
         /* Timer Bar */
-        .timer-container { width: 100%; height: 4px; background: #222; margin-top: 10px; border-radius: 10px; overflow: hidden; }
-        #timer-fill { width: 100%; height: 100%; background: var(--primary); transition: 0.1s linear; }
+        .timer-container { width: 100%; height: 5px; background: #222; margin: 15px 0; border-radius: 10px; overflow: hidden; }
+        #timer-fill { width: 100%; height: 100%; background: var(--primary); }
 
-        /* Button Savage */
-        button { background: var(--primary); border: none; padding: 16px; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; font-family: 'Inter'; text-transform: uppercase; letter-spacing: 1px; color: #000; }
-        button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 255, 136, 0.3); }
+        /* Input & Button */
+        input { width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 10px; color: #fff; margin-bottom: 15px; box-sizing: border-box; font-family: 'JetBrains Mono'; outline: none; }
+        input:focus { border-color: var(--primary); }
         
-        #options button { background: var(--accent); color: #fff; border: 1px solid var(--border); text-align: left; }
-        #options button:hover { border-color: var(--primary); background: #1e293b; }
+        button { background: var(--primary); border: none; padding: 16px; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; color: #000; text-transform: uppercase; font-family: 'Inter'; transition: 0.2s; }
+        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        
+        #options button { background: var(--accent); color: #fff; border: 1px solid var(--border); text-align: left; margin-bottom: 10px; text-transform: none; font-weight: 500; }
+        #options button:hover { border-color: var(--primary); background: #26344d; }
 
-        .hidden { display: none; }
-        .header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(10, 10, 11, 0.8); backdrop-filter: blur(10px); sticky top: 0; }
+        .hidden { display: none !important; }
+        #question-box { background: #000; padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary); margin-bottom: 20px; line-height: 1.6; font-size: 0.95rem; }
     </style>
 </head>
 <body>
 
-<div id="boot-screen">
-    <div class="typing">CONNECTING TO GLOBAL INTERPOL...</div>
-    <div id="boot-status" style="font-size: 0.7rem; margin-top: 10px; opacity: 0.6;">[SATELLITE SYNC: 0%]</div>
-</div>
-
 <div class="header">
-    <div style="font-weight: 900; color: var(--primary); font-size: 1.2rem;">ELITE IQ <span style="font-weight: 300; color:#fff;">v5.0</span></div>
-    <div id="user-display" style="font-size: 0.7rem; color: #71717a;">GUEST_MODE</div>
+    <div style="font-weight: 900; color: var(--primary); letter-spacing: 1px;">ELITE IQ <span style="font-weight:300; color:#fff">v5.1</span></div>
+    <div id="agent-label" style="font-size: 0.7rem; font-family: 'JetBrains Mono'; color: #71717a;">NO_AGENT_SYNC</div>
 </div>
 
-<div id="main-container" style="display:flex; align-items:center; justify-content:center; min-height: 80vh;" class="hidden">
-    
+<div class="container">
     <div id="page-setup" class="card">
-        <h2 style="margin:0;">OTORITAS AGEN</h2>
-        <p style="color:#71717a; font-size: 0.8rem; margin-bottom: 25px;">Sinkronisasi sidik jari digital untuk akses berkas kasus.</p>
-        <input type="text" id="agent-name" placeholder="NAMA KODE AGEN..." style="width:100%; background:#0a0a0b; border:1px solid var(--border); padding:15px; border-radius:10px; color:#fff; margin-bottom:15px; outline:none;">
-        <button onclick="login()">DAFTARKAN IDENTITAS</button>
+        <h2 style="margin-top:0">IDENTITAS AGEN</h2>
+        <input type="text" id="agent-input" placeholder="MASUKKAN KODE NAMA...">
+        <button onclick="login()">MULAI INVESTIGASI</button>
     </div>
 
     <div id="page-quiz" class="card hidden">
-        <div style="display:flex; justify-content:space-between; font-size: 0.7rem; font-weight: bold;">
-            <span id="case-num">KASUS 01</span>
-            <span style="color:var(--primary)">SCORE: <span id="current-score">0</span></span>
+        <div style="display:flex; justify-content:space-between; font-size: 0.7rem; font-weight: bold; font-family: 'JetBrains Mono';">
+            <span id="case-num">CASE_01</span>
+            <span style="color:var(--primary)">SCORE: <span id="live-score">0</span></span>
         </div>
         <div class="timer-container"><div id="timer-fill"></div></div>
-        
-        <div style="background:#0a0a0b; padding:20px; border-radius:15px; margin: 20px 0; border-left: 4px solid var(--primary); font-size: 0.95rem; line-height: 1.5;" id="question-box">
-            Memuat Berkas Kasus...
-        </div>
-        <div id="options" style="display:grid; gap:10px;"></div>
+        <div id="question-box">Memuat kasus...</div>
+        <div id="options"></div>
     </div>
 
     <div id="page-result" class="card hidden" style="text-align:center;">
-        <h3 style="color:var(--primary)">HASIL INVESTIGASI</h3>
-        <div id="final-score" style="font-size: 4rem; font-weight: 900; margin: 10px 0;">0</div>
-        <div id="rank-title" style="font-weight: bold; margin-bottom: 5px;">TRAINEE</div>
-        <p id="rank-desc" style="font-size: 0.8rem; color:#71717a; margin-bottom: 25px;"></p>
-        <button onclick="location.reload()">RE-INITIALIZE ACCESS</button>
+        <h3 style="color:var(--primary); margin:0;">ANALISIS SELESAI</h3>
+        <div id="final-score" style="font-size: 5rem; font-weight: 900; margin: 10px 0; font-family: 'JetBrains Mono';">0</div>
+        <div id="rank-name" style="font-weight: bold; letter-spacing: 2px;">RECRUIT</div>
+        <p style="font-size: 0.8rem; color:#71717a; margin: 20px 0;">Data telah diarsipkan ke server pusat.</p>
+        <button onclick="location.reload()">MAIN LAGI JINK!</button>
     </div>
-
 </div>
 
 <script>
-    // Konfigurasi Cloud
-    const BIN_ID = "69c4957daa77b81da91dbc5b"; 
-    const API_KEY = "$2a$10$B8fhV5n7IkR2au5rrUG1QeGxPZkLVngsNZRDWpw9x2mzDXeRCgyDG";
-    const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
     const cases = [
-        { q: "CEO Tewas. Pesan darah: 7, 10, 11. Tersangka: Jason, Mike, Kevin, Ryan.", a: ["Jason", "Mike", "Kevin", "Ryan"], c: 0, d: "Bulan 7(July), 10(Oct), 11(Nov). Inisial J-O-N." },
-        { q: "Sandi Caesar: 'DETEKTIF' -> 'EFUFLUJG'. Sandi 'IQ'?", a: ["JR", "KP", "JS", "KR"], c: 0, d: "Geser 1 huruf ke depan (A->B)." },
-        { q: "Jam Digital: Mati di 13:07. Pelakunya?", a: ["Leo", "Heli", "Shella", "Sam"], c: 0, d: "1307 diputar 180 derajat kebaca 'LEO'." }
-        // Tambahkan soal lainnya di sini...
+        { q: "CEO Tewas. Pesan darah: 7, 10, 11. Tersangka: Jason, Mike, Kevin, Ryan.", a: ["Jason", "Mike", "Kevin", "Ryan"], c: 0 },
+        { q: "Sandi Caesar: 'DETEKTIF' -> 'EFUFLUJG'. Sandi 'IQ'?", a: ["JR", "KP", "JS", "KR"], c: 0 },
+        { q: "Jam Digital: Mati di 13:07. Pelakunya?", a: ["Leo", "Heli", "Shella", "Sam"], c: 0 },
+        { q: "Jika 1=5, 2=25, 3=125, 4=625, maka 5 = ?", a: ["3125", "5", "1", "25"], c: 2 },
+        { q: "Pria menembak istrinya, mencuci fotonya, lalu makan malam bersama. Dia adalah?", a: ["Hantu", "Fotografer", "Zombi", "Koki"], c: 1 }
     ];
 
-    let current = 0, score = 0, agent = "", timer, timeLeft;
-
-    // Booting Logic
-    window.onload = () => {
-        let p = 0;
-        const interval = setInterval(() => {
-            p += 5;
-            document.getElementById('boot-status').innerText = `[SATELLITE SYNC: ${p}%]`;
-            if(p >= 100) {
-                clearInterval(interval);
-                document.getElementById('boot-screen').classList.add('hidden');
-                document.getElementById('main-container').classList.remove('hidden');
-            }
-        }, 100);
-    };
+    let current = 0, score = 0, timer, timeLeft;
 
     function login() {
-        const name = document.getElementById('agent-name').value;
-        if(name.length < 3) return alert("Akses Ditolak: Nama terlalu pendek!");
-        agent = name;
-        document.getElementById('user-display').innerText = `AGENT: ${agent.toUpperCase()}`;
-        startQuiz();
-    }
-
-    function startQuiz() {
+        const name = document.getElementById('agent-input').value;
+        if(name.length < 2) return alert("Nama minimal 2 huruf, jink!");
+        document.getElementById('agent-label').innerText = `AGENT: ${name.toUpperCase()}`;
         showPage('page-quiz');
         loadQuestion();
     }
@@ -126,7 +92,7 @@
         if(current >= cases.length) return finish();
         
         const q = cases[current];
-        document.getElementById('case-num').innerText = `KASUS ${current + 1}`;
+        document.getElementById('case-num').innerText = `CASE_0${current + 1}`;
         document.getElementById('question-box').innerText = q.q;
         
         const optCont = document.getElementById('options');
@@ -145,39 +111,36 @@
         timeLeft = 100;
         clearInterval(timer);
         timer = setInterval(() => {
-            timeLeft -= 0.5;
+            timeLeft -= 0.8; // Kecepatan timer
             document.getElementById('timer-fill').style.width = timeLeft + "%";
-            if(timeLeft <= 0) {
-                clearInterval(timer);
-                check(-1); // Time out
-            }
+            if(timeLeft <= 0) { check(-1); }
         }, 50);
     }
 
     function check(idx) {
         clearInterval(timer);
-        const correct = cases[current].c;
-        if(idx === correct) {
-            score += Math.round(timeLeft * 2); // Poin berdasarkan sisa waktu
-            document.getElementById('current-score').innerText = score;
+        if(idx === cases[current].c) {
+            score += Math.round(timeLeft * 2);
+            document.getElementById('live-score').innerText = score;
         }
         current++;
-        setTimeout(loadQuestion, 500);
+        loadQuestion();
     }
 
     function showPage(id) {
-        ['page-setup', 'page-quiz', 'page-result'].forEach(p => document.getElementById(p).classList.add('hidden'));
+        document.getElementById('page-setup').classList.add('hidden');
+        document.getElementById('page-quiz').classList.add('hidden');
+        document.getElementById('page-result').classList.add('hidden');
         document.getElementById(id).classList.remove('hidden');
     }
 
     function finish() {
         showPage('page-result');
         document.getElementById('final-score').innerText = score;
-        let title = "RECRUIT";
-        if(score > 500) title = "ELITE AGENT";
-        if(score > 1000) title = "FORENSIC MASTERMIND";
-        document.getElementById('rank-title').innerText = title;
-        document.getElementById('rank-desc').innerText = `Laporan investigasi agen ${agent} telah diarsipkan ke Cloud Global.`;
+        let rank = "ACADEMY TRAINEE";
+        if(score > 400) rank = "FIELD AGENT";
+        if(score > 750) rank = "MASTERMIND";
+        document.getElementById('rank-name').innerText = rank;
     }
 </script>
 
