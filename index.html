@@ -27,7 +27,7 @@
         .wrong-glow { background: var(--danger) !important; color: white !important; box-shadow: 0 0 15px var(--danger); }
         .progress-bar { height: 6px; background: var(--border); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
-        #q-image { width: 100%; border-radius: 12px; margin-bottom: 15px; display: none; border: 1px solid var(--border); }
+        #q-image { width: 100%; border-radius: 12px; margin-bottom: 15px; display: none; border: 1px solid var(--border); object-fit: cover; max-height: 250px; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.8rem; }
         td, th { padding: 10px 5px; border-bottom: 1px solid var(--border); text-align: left; }
         .adm-btn { padding: 4px 8px; font-size: 0.65rem; border-radius: 5px; border: none; cursor: pointer; margin-right: 2px; width: auto; display: inline-block; font-weight: 800; }
@@ -43,7 +43,7 @@
         <div style="cursor:pointer; font-size:1.4rem;" onclick="toggleSidebar()">☰</div>
         <div id="header-title" style="font-weight:800; color:var(--primary); letter-spacing:1px;">IQ TEST CIN</div>
     </div>
-    <div id="status-tag" style="font-size: 0.6rem; font-weight: 800; color:var(--primary);">V6.7_GOD_FIX</div>
+    <div id="status-tag" style="font-size: 0.6rem; font-weight: 800; color:var(--primary);">V6.8_VISUAL</div>
 </div>
 
 <div class="sidebar" id="sidebar">
@@ -71,8 +71,8 @@
     <div id="admin-panel" class="card hidden">
         <h2 style="color:var(--success)">GOD MODE CONTROL</h2>
         <button onclick="injectMe()">SUNTIK 30,000 POIN</button>
-        <button style="background:var(--danger); color:white;" onclick="resetLocalStorage()">RESET DATA PERANGKAT INI</button>
-        <button class="btn-sec" onclick="toggleRanking()">EDIT RANKING ORANG</button>
+        <button style="background:var(--danger); color:white;" onclick="resetLocalStorage()">RESET DATA PERANGKAT</button>
+        <button class="btn-sec" onclick="toggleRanking()">EDIT RANKING</button>
         <button class="btn-sec" onclick="showPage('setup')">Kembali</button>
     </div>
 
@@ -83,14 +83,14 @@
             <span id="q-count"></span>
             <span style="font-weight:bold; color:var(--primary);">PTS: <span id="live-score">0</span></span>
         </div>
-        <img id="q-image" src="" alt="Soal Gambar">
+        <img id="q-image" src="" alt="Bukti Foto">
         <div id="question-text" style="background:var(--bg-input); padding:20px; border-radius:15px; text-align:left; border-left:4px solid var(--primary); margin-bottom:20px;"></div>
         <div id="options" style="display:grid; gap:10px;"></div>
     </div>
 
     <div id="lvl-up" class="card hidden">
         <h2 style="color:var(--primary)">LEVEL 1 CLEAR!</h2>
-        <p>Akses Level 2: Galactic (30 Soal by Akball) Terbuka.</p>
+        <p>Siap masuk Level 2: Visual Evidence (15 Soal Gambar)?</p>
         <button onclick="startLevel2()">GAS LEVEL 2</button>
     </div>
 
@@ -116,7 +116,6 @@
     const API_KEY = "$2a$10$B8fhV5n7IkR2au5rrUG1QeGxPZkLVngsNZRDWpw9x2mzDXeRCgyDG";
     const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-    // --- DATA SOAL (SILAKAN ISI 30 SOAL AKBALL DI LV2) ---
     const lv1 = [
         { q: "CEO Tewas. Pesan: 7, 10, 11. Tersangka: Jason, Mike, Kevin, Ryan.", a: ["Jason", "Mike", "Kevin", "Ryan"], c: 0 },
         { q: "Jika 1=5, 2=15, 3=215, maka 5 = ?", a: ["1", "5", "555"], c: 1 },
@@ -135,22 +134,34 @@
         { q: "Siapa penemu gravitasi?", a: ["Einstein", "Newton", "Tesla"], c: 1 }
     ];
 
-    const lv2 = Array(30).fill(null).map((_, i) => ({
-        q: `Soal Akball Astronomi #${i+1}: Apa nama galaksi kita?`,
-        a: ["Bimasakti", "Andromeda", "Cigar"],
-        c: 0
-    }));
+    // LEVEL 2: 15 SOAL GAMBAR
+    const lv2 = [
+        { q: "Perhatikan foto: Siapa yang berbohong?", a: ["Pria Kiri", "Wanita Kanan", "Keduanya"], c: 1, img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500" },
+        { q: "Lihat sidik jari ini. Tipe apa?", a: ["Loop", "Whorl", "Arch"], c: 0, img: "https://images.unsplash.com/photo-1536413280874-06771e8a2a7b?w=500" },
+        { q: "Barang mana yang hilang dari TKP?", a: ["Kunci", "Dompet", "Pisau"], c: 2, img: "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=500" },
+        { q: "Lihat bayangan ini. Jam berapa sekarang?", a: ["Pagi", "Siang", "Sore"], c: 1, img: "https://images.unsplash.com/photo-1493246507139-91e8bef99c1a?w=500" },
+        { q: "Sandi di tembok: 01000001.", a: ["A", "B", "C"], c: 0, img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500" },
+        { q: "Siapa pemilik cangkir ini?", a: ["Kiri (Kidal)", "Kanan", "Netral"], c: 0, img: "https://images.unsplash.com/photo-1517142089942-ba376ce32a2e?w=500" },
+        { q: "Cari benda aneh di gambar ini.", a: ["Lampu", "Kucing", "Patung"], c: 2, img: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=500" },
+        { q: "Mana jalur yang aman?", a: ["A", "B", "C"], c: 1, img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500" },
+        { q: "Analisis bercak ini. Apa itu?", a: ["Saus", "Darah", "Kopi"], c: 1, img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500" },
+        { q: "Pintu mana yang jebol?", a: ["Pintu 1", "Pintu 2", "Pintu 3"], c: 0, img: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500" },
+        { q: "Lihat kode warna ini. Artinya?", a: ["Bahaya", "Aman", "Siaga"], c: 0, img: "https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?w=500" },
+        { q: "Alat bukti mana yang palsu?", a: ["Pistol", "Kamera", "Uang"], c: 2, img: "https://images.unsplash.com/photo-1584433144859-1fc3ab84a9ec?w=500" },
+        { q: "Kemana arah lari pelaku?", a: ["Ke Atas", "Ke Bawah", "Ke Kiri"], c: 0, img: "https://images.unsplash.com/photo-1476820865390-c59aeeb9e104?w=500" },
+        { q: "Sandi Morse: ... --- ...", a: ["HELP", "SOS", "DEAD"], c: 1, img: "https://images.unsplash.com/photo-1551033406-611cf9a28f67?w=500" },
+        { q: "Siapa agen rahasia di foto ini?", a: ["Topi Merah", "Jas Hitam", "Kacamata"], c: 1, img: "https://images.unsplash.com/photo-1522071823991-b9671f9d798d?w=500" }
+    ];
 
     let currentIdx = 0, score = 0, currentUser = "", currentLv = 1, isAdmin = false;
 
-    // --- ON LOAD CHECK ---
     window.onload = () => {
         const savedName = localStorage.getItem('agent_name');
         if(savedName) {
             currentUser = savedName;
             document.getElementById('register-box').classList.add('hidden');
             document.getElementById('continue-box').classList.remove('hidden');
-            document.getElementById('welcome-back').innerText = `Selamat Datang Kembali, Agen ${savedName}`;
+            document.getElementById('welcome-back').innerText = `Welcome Back, Agent ${savedName}`;
             updateHeaderTitle(savedName);
         }
     };
@@ -170,63 +181,49 @@
         startLevel1();
     }
 
-    // --- GOD MODE ENGINE (FIXED) ---
     function authAdmin() {
-        if(prompt("Masukkan Kode Rahasia:") === "2377") {
+        if(prompt("Kode Rahasia:") === "2377") {
             isAdmin = true;
-            document.getElementById('status-tag').innerText = "ROOT_CIN_ACTIVE";
+            document.getElementById('status-tag').innerText = "GOD_MODE_ACTIVE";
             document.getElementById('god-menu').style.display = 'block';
-            alert("Akses God Mode Aktif. Kick & Edit terbuka di Ranking.");
+            alert("Halo Ketua! Kontrol Penuh Aktif.");
         }
     }
 
     async function editScore(name) {
-        const newScore = prompt(`Ganti poin untuk ${name}:`);
-        if (newScore === null || isNaN(newScore)) return;
+        const newS = prompt(`Poin baru ${name}:`);
+        if(!newS) return;
         let db = await fetchGlobalRank();
         const idx = db.findIndex(u => u.name === name);
-        if(idx !== -1) {
-            db[idx].score = parseInt(newScore);
-            await saveToCloud(db);
-            alert("Poin Berhasil Diupdate!");
-            toggleRanking();
-        }
+        if(idx !== -1) { db[idx].score = parseInt(newS); await saveToCloud(db); toggleRanking(); }
     }
 
     async function kickAgent(name) {
-        if(!confirm(`Tendang ${name}?`)) return;
+        if(!confirm(`Kick ${name}?`)) return;
         let db = await fetchGlobalRank();
         db = db.filter(u => u.name !== name);
-        await saveToCloud(db);
-        alert("Agen Dihapus!");
-        toggleRanking();
+        await saveToCloud(db); toggleRanking();
     }
 
-    function injectMe() { score = 30000; alert("Poin kamu disuntik ke 30.000!"); }
-    function resetLocalStorage() {
-        if(confirm("Hapus data di HP ini?")) { localStorage.clear(); location.reload(); }
-    }
+    function injectMe() { score = 30000; alert("Poin disuntik ke 30K!"); }
+    function resetLocalStorage() { localStorage.clear(); location.reload(); }
 
-    // --- GAME LOGIC ---
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
     function showPage(id) {
         document.getElementById('sidebar').classList.remove('active');
-        ['setup', 'quiz', 'lvl-up', 'ranking', 'result', 'admin-panel'].forEach(p => {
-            const el = document.getElementById(p);
-            if(el) el.classList.add('hidden');
-        });
+        ['setup', 'quiz', 'lvl-up', 'ranking', 'result', 'admin-panel'].forEach(p => document.getElementById(p)?.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
     }
 
     function startLevel1() {
         currentIdx = 0; score = 0; currentLv = 1; showPage('quiz');
-        document.getElementById('lvl-tag').innerText = "LEVEL 1: CASE FORENSIC";
+        document.getElementById('lvl-tag').innerText = "LV 1: CASE FORENSIC";
         showQuestion();
     }
 
     function startLevel2() {
         currentIdx = 0; currentLv = 2; showPage('quiz');
-        document.getElementById('lvl-tag').innerText = "LEVEL 2: GALACTIC BY AKBALL";
+        document.getElementById('lvl-tag').innerText = "LV 2: VISUAL EVIDENCE";
         showQuestion();
     }
 
@@ -234,8 +231,10 @@
         const list = (currentLv === 1) ? lv1 : lv2;
         const q = list[currentIdx];
         const imgEl = document.getElementById('q-image');
+        
         if(q.img) { imgEl.src = q.img; imgEl.style.display = 'block'; }
         else { imgEl.style.display = 'none'; }
+
         document.getElementById('progress-fill').style.width = ((currentIdx+1)/list.length)*100 + "%";
         document.getElementById('q-count').innerText = `${currentIdx+1} / ${list.length}`;
         document.getElementById('question-text').innerText = q.q;
@@ -250,7 +249,7 @@
     function handleAnswer(btn, sel, cor) {
         const btns = document.querySelectorAll('#options button');
         btns.forEach(b => b.onclick = null);
-        const pts = (currentLv === 1) ? (500/15) : 20;
+        const pts = (currentLv === 1) ? (500/15) : (500/15); 
         if(sel === cor) {
             score += pts; btn.classList.add('correct-glow'); document.getElementById('snd-correct').play();
         } else {
@@ -259,13 +258,13 @@
         score = Math.min(30000, score);
         document.getElementById('live-score').innerText = Math.round(score);
         setTimeout(() => {
-            if(++currentIdx < (currentLv === 1 ? lv1.length : lv2.length)) showQuestion();
+            const list = (currentLv === 1) ? lv1 : lv2;
+            if(++currentIdx < list.length) showQuestion();
             else if(currentLv === 1) showPage('lvl-up');
             else finish();
         }, 1000);
     }
 
-    // --- CLOUD ENGINE ---
     async function saveToCloud(data) {
         data.sort((a,b) => b.score - a.score);
         await fetch(URL, {
@@ -277,13 +276,12 @@
 
     async function fetchGlobalRank() {
         const res = await fetch(URL, { headers: { 'X-Master-Key': API_KEY }});
-        const data = await res.json();
-        return data.record || [];
+        const data = await res.json(); return data.record || [];
     }
 
     async function toggleRanking() {
         showPage('ranking');
-        document.getElementById('rank-body').innerHTML = `<tr><td colspan="4">Menyadap Cloud...</td></tr>`;
+        document.getElementById('rank-body').innerHTML = `<tr><td colspan="4">Syncing...</td></tr>`;
         const db = await fetchGlobalRank();
         document.getElementById('rank-body').innerHTML = db.map((u, i) => 
             `<tr>
@@ -302,13 +300,13 @@
         showPage('result');
         const final = Math.round(score);
         document.getElementById('score-display').innerText = final;
-        document.getElementById('cloud-status').innerText = "Mengarsipkan laporan...";
+        document.getElementById('cloud-status').innerText = "Uploading to Cloud...";
         let db = await fetchGlobalRank();
         db = db.filter(u => u.name.toLowerCase() !== currentUser.toLowerCase());
         db.push({name: currentUser, score: final});
         await saveToCloud(db);
-        document.getElementById('cloud-status').innerText = "✅ Tersimpan!";
+        document.getElementById('cloud-status').innerText = "✅ Mission Logged!";
     }
 </script>
 </body>
-            </html>
+</html>
